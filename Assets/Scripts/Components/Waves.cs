@@ -64,17 +64,6 @@ public class Waves : MonoBehaviour
             }
             else
             {
-                if (waveNumber % 5 == 0)
-                {
-                    canSpawnBoss = true;
-                }
-
-                if (canSpawnBoss)
-                {
-                    canSpawnBoss = false;
-                    SpawnBoss();
-                }
-
                 if (timerSpawn <= spawnTimer && !canSpawn)
                 {
                     timerSpawn += Time.deltaTime;
@@ -107,11 +96,6 @@ public class Waves : MonoBehaviour
         --enemiesPerWave;
     }
 
-    private void SpawnBoss()
-    {
-
-    }
-
     private void SetWaveMultiplier()
     {
         waveMultiplier = Math.Clamp(waveMultiplier + .2f, 1, 2.5f);
@@ -137,10 +121,7 @@ public class Waves : MonoBehaviour
     private void NextWave()
     {
         ++waveNumber;
-        if (waveNumber == 1)
-        {
-            _NextWaveMultiplier(waveNumber);
-        }
+        _NextWaveMultiplier(waveNumber);
 
         ResetTimer();
         SetEnemiesPerWave();

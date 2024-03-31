@@ -59,11 +59,8 @@ public class Scoreboard : MonoBehaviour
 
     private void ResetMultipler(bool isDead)
     {
-        if (isDead)
-        {
-            multipler = 1;
-            SetMultiplierText();
-        }
+        multipler = 1;
+        SetMultiplierText();
     }
 
     private void SetScoreText()
