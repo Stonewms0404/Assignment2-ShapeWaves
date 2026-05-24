@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class spawnSmallSquares : MonoBehaviour
 {
-    void Update()
+    void Start()
     {
-        if (transform.childCount == 0)
+        foreach (SquareAI children in GetComponentsInChildren<SquareAI>())
         {
-            Destroy(gameObject);
+            children.transform.parent = GameObject.Find("Enemies").transform;
         }
+        Destroy(gameObject);
     }
 }

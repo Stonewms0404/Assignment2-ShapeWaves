@@ -20,7 +20,7 @@ public class Pickup : MonoBehaviour
     private void FixedUpdate()
     {
         timer += Time.deltaTime;
-        if (timer > 5.0f)
+        if (timer > 10.0f)
         {
             PickedUp();
         }

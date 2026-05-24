@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
 {
     //Events
     public static event Action<GameObject, Transform> _SpawnObject;
+    public static event Action<PlayerBullet, Vector2> _Shoot;
     public static event Action<bool> _HitObject;
     public static event Action<bool> _NotDead;
     public static event Action<int> _AddLife;
@@ -22,7 +23,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float forceDamping;
     private Vector2 MoveInput;
     private bool gameLost = false;
-    private Vector2 forceToApply;
 
     //Object Variables
     [SerializeField] private Rigidbody2D rb;
@@ -66,6 +66,7 @@ public class Player : MonoBehaviour
         {
             isDead = true;
             transform.position = Vector3.zero;
+            return;
         }
 
         //If the player is within 100px of (0, 0), the player is no longer dead.
@@ -111,6 +112,8 @@ public class Player : MonoBehaviour
     //If an object of a specific type enters the character's collider based upon the object's tag.
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (isDead) return;
+
         if (other.CompareTag("Enemy") || other.CompareTag("EnemyBullet"))
         {
             isDead = true;
@@ -141,38 +144,12 @@ public class Player : MonoBehaviour
 
     public void Death()
     {
-        _HitObject(isDead);
         deathAudio.Play();
+
+        _HitObject(isDead);
         _SpawnObject(deathParticles, transform);
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        GameObject[] enemyBullets = GameObject.FindGameObjectsWithTag("EnemyBullet");
-        GameObject[] playerBullets = GameObject.FindGameObjectsWithTag("PlayerBullet");
         GameObject[] pickups = GameObject.FindGameObjectsWithTag("Pickup");
-        
-        for (int i = 0; i < enemies.Length; i++)
-        {
-            if (enemies[i] != null)
-            {
-                Destroy(enemies[i]);
-            }
-        }
-
-        for (int i = 0; i < enemyBullets.Length; i++)
-        {
-            if (enemyBullets[i] != null)
-            {
-                Destroy(enemyBullets[i]);
-            }
-        }
-
-        for (int i = 0; i < playerBullets.Length; i++)
-        {
-            if (playerBullets[i] != null)
-            {
-                Destroy(playerBullets[i]);
-            }
-        }
 
         for (int i = 0; i < pickups.Length; i++)
         {

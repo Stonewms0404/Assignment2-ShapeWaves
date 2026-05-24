@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-
 public class Waves : MonoBehaviour
 {
-    public static event Action<bool, int> _SpawnEnemy;
     public static event Action<int> _NextWaveMultiplier;
 
     private int waveNumber = 0;
@@ -17,23 +13,21 @@ public class Waves : MonoBehaviour
     private float timerWaves;
     private bool isPlayerDead = false;
     private bool canSpawn = false;
-    private bool canSpawnBoss = false;
     private bool betweenWaves = false;
 
     public float waveMultiplier = 1;
 
     [SerializeField] private GameObject WaveNumberTextObj;
     [SerializeField] private TextMeshProUGUI WaveNumberText;
+    [SerializeField] private EnemySpawner[] spawners = new EnemySpawner[4];
 
     private void OnEnable()
     {
-        EnemySpawner._EnemySpawned += EnemySpawned;
         Player._HitObject += SetIsPlayerDead;
         Player._NotDead += SetIsPlayerDead;
     }
     private void OnDisable()
     {
-        EnemySpawner._EnemySpawned -= EnemySpawned;
         Player._HitObject -= SetIsPlayerDead;
         Player._NotDead -= SetIsPlayerDead;
     }
@@ -77,8 +71,9 @@ public class Waves : MonoBehaviour
 
                 if (canSpawn)
                 {
-                    _SpawnEnemy(canSpawn, UnityEngine.Random.Range(1, 5)); // Spawns the enemy from one of the four spawners
+                    spawners[UnityEngine.Random.Range(0, spawners.Length)].Spawn(); // Spawns the enemy from one of the four spawners
                     canSpawn = false;
+                    enemiesPerWave--;
                     ResetTimer();
                 }
                 betweenWaves = enemiesPerWave <= 0;
@@ -89,11 +84,6 @@ public class Waves : MonoBehaviour
         {
             ResetTimer();
         }
-    }
-
-    private void EnemySpawned(int value)
-    {
-        --enemiesPerWave;
     }
 
     private void SetWaveMultiplier()
@@ -120,7 +110,7 @@ public class Waves : MonoBehaviour
 
     private void NextWave()
     {
-        ++waveNumber;
+        waveNumber++;
         _NextWaveMultiplier(waveNumber);
 
         ResetTimer();

@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class PlayerShooting : MonoBehaviour
 {
+    public static event Func<PlayerBullet, Vector2, PlayerBullet> _Shoot;
+
     private Vector3 shootAtPos;
     private float timerFastShot;
     private float timerBurstShot;
-    private float timerMachineGun;
     private float timeBetweenFastFiring;
     private float timeBetweenBurstFiring;
     private float timeLeftOnMachineGun;
@@ -18,7 +19,7 @@ public class PlayerShooting : MonoBehaviour
     private bool canFireFast = false;
     private bool canFireBurst = false;
 
-    [SerializeField] private GameObject Bullet;
+    [SerializeField] private PlayerBullet bullet;
     [SerializeField] private Transform shootAtRotator;
 
     [SerializeField] private float shootFastSpeed;
@@ -128,7 +129,8 @@ public class PlayerShooting : MonoBehaviour
 
             for (int i = 0; i < randNum; i++)
             {
-                Instantiate(Bullet, transform.position, Quaternion.identity);
+                PlayerBullet playerBullet = _Shoot(bullet, transform.position);
+                playerBullet.transform.rotation = transform.rotation;
             }
         }
 
@@ -149,7 +151,8 @@ public class PlayerShooting : MonoBehaviour
 
             for (int i = 0; i < randNum; i++)
             {
-                Instantiate(Bullet, transform.position, Quaternion.identity);
+                PlayerBullet playerBullet = _Shoot(bullet, transform.position);
+                playerBullet.transform.rotation = transform.rotation;
             }
         }
     }

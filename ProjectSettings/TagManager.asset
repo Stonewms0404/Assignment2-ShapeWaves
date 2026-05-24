@@ -15,6 +15,7 @@ TagManager:
   - UserInterface
   - Waves
   - Walls
+  - SmallSquareParent
   layers:
   - Default
   - TransparentFX

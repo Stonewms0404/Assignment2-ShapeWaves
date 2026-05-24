@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -5,20 +6,19 @@ using UnityEngine;
 
 public class HexagonAI : MonoBehaviour
 {
+    public static event Action<GameObject, Transform> _SpawnObject;
+    public static event Func<EnemyBullet, Vector2, EnemyBullet> _Shoot;
+
     private GameObject playerPos;
     private float timer;
 
-    public GameObject EnemyBullet;
+    public EnemyBullet enemyBullet;
     public GameObject deathParticles;
-    public GameObject BulletTransform;
-    public GameObject Hexagon;
+    public GameObject[] bulletTransform;
     public Enemy enemy;
     public bool canFire;
-    public bool ableToFire;
     public float timeBetweenFiring;
-    public float maxAngleVariation;
     public int Speed;
-
 
     private void Start()
     {
@@ -47,8 +47,14 @@ public class HexagonAI : MonoBehaviour
         else
         {
             canFire = false;
-
-            Instantiate(EnemyBullet, BulletTransform.transform.position, transform.rotation);
+            for (int i = 0; i < bulletTransform.Length; i++)
+            {
+                GameObject bulletTrans = bulletTransform[i];
+                EnemyBullet bullet = _Shoot(enemyBullet, bulletTrans.transform.position);
+                bullet.originPosition = transform.position;
+                if (i == 0) bullet.playAudio = true;
+                else bullet.playAudio = false;
+            }
         }
 
         Move();
@@ -61,11 +67,5 @@ public class HexagonAI : MonoBehaviour
         direction.z = 0;
 
         transform.position = Vector3.MoveTowards(transform.position, playerPos.transform.position, Time.deltaTime * Speed);
-    }
-
-    public void Death()
-    {
-        Instantiate(deathParticles, transform);
-        Destroy(gameObject);
     }
 }
